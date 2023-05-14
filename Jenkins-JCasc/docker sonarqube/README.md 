@@ -1,0 +1,71 @@
+
+
+build the docker image. 
+
+docker build -t my-jenkins-image .
+
+
+
+
+
+
+
+Step 1: Make sure you remote server is up and running.
+
+Step 2: SSH into your remote server via the command line.
+
+ ```
+ ssh root@<ipv4_address>
+ ```
+
+Step 3: Grab the container id of Jenkins:
+
+```
+docker ps
+```
+Step 4: Enter inside the container that is running Jenkins as root user
+
+```
+docker exec -u 0 -it <container_id> bash
+```
+
+Step 5: Check Linux Distribution running in your Container
+
+```
+cat /etc/issue
+```
+
+Step 6: Update APT
+
+```
+apt-update
+```
+
+Step 7: If not already, install Curl
+
+```
+apt install curl
+```
+
+Step 8: Run curl command to get scripts to install Node.js and NPM
+
+```
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+```
+
+Step 9: Execute script
+```
+bash nodesource_setup.sh
+```
+Step 10: Install Node.js and NPM
+```
+apt install nodejs
+```
+Congratulations! You successfully installed NPM and Node.js for Jenkins! 
+
+To find there path which need to be added on jenkins 
+
+```
+which node 
+which npm 
+```

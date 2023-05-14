@@ -1,0 +1,3 @@
+[submodule "JCasc"]
+	path = JCasc
+	url = https://github.com/AmalAsokakumar/JCasc.git

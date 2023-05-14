@@ -1,0 +1,9 @@
+
+apache-httpcomponents-client-4-api:latest
+authentication-tokens:1.53.v1c90fd9191a_b_
+bootstrap5-api:5.2.2-2
+bouncycastle-api:2.27 
+branch-api:2.1071.v1a_188a_562481 
+build-timeout:1.28 
+caffeine-api:2.9.3-65.v6a_47d0f4d1fe 
+checks-api:2.0.0 

@@ -1,0 +1,1 @@
+jenkins needed admin privilege to continue 

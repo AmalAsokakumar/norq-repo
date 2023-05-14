@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-creds').accessKey
+        AWS_SECRET_ACCESS_KEY = credentials('aws-creds').secretKey
+        AWS_DEFAULT_REGION = 'us-east-1'
+        ECR_REPO_NAME = 'my-ecr-repo'
+    }
+    stages {
+        stage("SCM") {
+            steps {
+                cleanWs()
+                // sh "docker system prune -af"
+                sh "echo 'cloning'"
+                sh "ls -lrt"
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+            }
+        }
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    sh "ls -l"
+                    sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"http://3.0.46.227:9000\"' > .env"
+                    sh "npm install"
+                    sh "npm run build"
+                    sh "ls -la "
+                    sh "docker build -t react:${BUILD_NUMBER} ."
+                }
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-creds', region: AWS_DEFAULT_REGION) {
+                        sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                        sh "docker tag react:${BUILD_NUMBER} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:react-${BUILD_NUMBER}"
+                        sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:react-${BUILD_NUMBER}"
+                    }
+                }
+            }
+        }
+
+        stage("Deploy to EC2") {
+            steps {
+                script {
+                    // Get the latest AMI ID for the EC2 instance
+                    def ami_id = sh(script: "aws ec2 describe-images --filters 'Name=tag:Name,Values=my-ami' --query 'reverse(sort_by(Images, &CreationDate))[0].ImageId' --output text", returnStdout: true).trim()
+
+                    // Launch the EC2 instance with the latest AMI ID and run the Docker image
+                    sh "aws ec2 run-instances --image-id ${ami_id} --instance-type t2.micro --key-name my-key-pair --security-group-ids sg-123456 --subnet-id subnet-123456 --user-data '#!/bin/bash\ndocker run -p 80:80 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPO_NAME}:react-${BUILD_NUMBER}'"
+                }
+            }
+        }
+    }
+}

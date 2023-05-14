@@ -1,0 +1,46 @@
+pipeline{
+    agent any
+    stages{
+        stage("SCM"){
+            steps{
+                cleanWs()
+                sh "echo 'cloning' "
+                sh "ls -lrt"
+                // git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/test-account-for-learning/new-react-app-.git'
+                git branch: 'rutuj/dashboard-login', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+                //git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+            }
+        }
+        stage("Build"){
+            steps{
+                script{
+                    // try{
+                        sh "npm install" 
+                        sh "npm run build"
+                        sh "echo 'build completed'"
+                    // }catch(e){
+                    //     currentBuild.result = "FAILURE"
+                    //     error "Build failed: ${e}"
+                    // }
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    def dir = "/var/www/html/yourdomain.com"
+                    if (!fileExists(dir)) {
+                        sh "mkdir -p $dir"
+                        sh "chown jenkins:jenkins $dir"
+                        sh "echo new directory created" 
+                    } else {
+                        sh "rm -rf $dir/*"
+                        sh " echo 'old react build removed'"
+                    }
+                    sh "cp -R ${WORKSPACE}/* $dir"
+                    sh "echo 'new build added'"
+                }
+            }
+        }
+    }
+}

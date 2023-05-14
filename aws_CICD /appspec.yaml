@@ -1,0 +1,25 @@
+
+version: 0.1
+phases:
+  install: 
+    runtime-versions: 
+      nodejs: 16
+    commands: 
+      - echo Installing dependencies...
+      - npm install
+  pre_build:
+    commands:
+      - echo Prebuild ops 
+      - ls -la
+  build:
+    commands:
+      - echo Building the application... 
+      - npm run build 
+      - echo build completed. 
+      # - docker build -t react${CODEBUILD_BUILD_NUMBER} .
+  post_build:
+    commands:
+      - echo Build completed on `date` # same for the post build 
+artifacts:
+  files:
+    - '**/*'   # here it is copying everything 

@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        ECR_REGISTRY = "your-ecr-registry-url"
+        AWS_DEFAULT_REGION = "your-aws-region"
+        AWS_ACCOUNT_ID = "your-aws-account-id"
+        SSH_KEY = credentials('your-ssh-key-credential-id')
+        EC2_INSTANCE_IP = "your-ec2-instance-ip-address"
+        BACKEND_IP = "3.0.46.227:9000" 
+    }
+
+    stages {
+        stage("SCM") {
+            steps {
+                cleanWs()
+                sh "docker system prune -af"
+                sh "echo 'cloning'"
+                sh "ls -lrt"
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+            }
+        }
+
+        stage("Build Docker Image... ") {
+            steps {
+                script {
+                    sh "ls -l"
+                    sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"http://${BACKEND_IP}\"' > .env"
+                    sh "npm install"
+                    sh "npm run build"
+                    sh "ls -la "
+                    sh "docker build -t react:${BUILD_NUMBER} . "
+                    sh "docker tag react:${BUILD_NUMBER} ${ECR_REGISTRY}/react:${BUILD_NUMBER}"
+                    withCredentials([string(credentialsId: 'your-aws-ecr-credential-id', variable: 'DOCKER_REGISTRY_CREDENTIALS')]) {
+                        sh "docker login -u AWS -p ${DOCKER_REGISTRY_CREDENTIALS} https://${ECR_REGISTRY}"
+                        sh "docker push ${ECR_REGISTRY}/react:${BUILD_NUMBER}"
+                    }
+                }
+            }
+        }
+        stage("Editing Docker-compose file...") {
+            steps {
+                script{
+                    sh "ls -lrt"
+                    sh "echo 'editing docker-compose.yaml file'"
+                    sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose.yaml"
+                    sh "cat docker-compose.yaml"
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(['${SSH_KEY}']) {
+                    script {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} \"sudo docker-compose down --rmi local --remove-orphans\""
+                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@${EC2_INSTANCE_IP}:~/"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} \"sudo docker-compose up -d\""
+                    }
+                }
+            }
+        }
+    }
+}
