@@ -1,4 +1,12 @@
 #!/bin/bash
+
+'''
+author : Amal 
+use case : jenkins for ubuntu:22.04.
+description : 
+
+'''
+
 # creating a user
 adduser jenkins
 usermod -aG sudo jenkins 
