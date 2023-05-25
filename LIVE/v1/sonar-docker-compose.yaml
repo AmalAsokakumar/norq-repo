@@ -2,6 +2,7 @@ version: '3'
 
 services:
   sonarqube:
+    container_name: my-sonarqube-container
     image: sonarqube
     ports:
       - 9000:9000
@@ -10,8 +11,13 @@ services:
       - logs:/opt/sonarqube/logs
       - extensions:/opt/sonarqube/extensions
     restart: unless-stopped
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      # - SONARQUBE_JDBC_URL=jdbc:postgresql://localhost/sonarqube
 
 volumes:
   data:
   logs:
   extensions:
+
