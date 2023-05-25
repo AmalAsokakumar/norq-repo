@@ -41,6 +41,6 @@ docker container run -d -p 9000:9000  --name sonar-qube -v data:/opt/sonarqube/d
 
 # for docker compose 
 # curl -O -L <raw_file_url>
-curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/docke-compose-files/sonar-docker-compose.yaml
+curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/Script/docker-compose-files-for-installations/sonar-docker-compose.yaml
 # wget <raw_file_url>
 docker-compose -f sonar-docker-compose.yaml up -d

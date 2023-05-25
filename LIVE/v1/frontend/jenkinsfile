@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment {
+        BACKEND = "http://3.0.46.227:9000"
+    }
     stages{
         stage("SCM"){
             steps{
@@ -15,10 +18,10 @@ pipeline{
                 script{
                      sh "ls -l"
                      echo "Downloading Dockerfile"
-                     sh "curl -O -L https://github.com/AmalAsokakumar/norq-repo/blob/main/LIVE/v1/frontend/dockerfile"
+                     sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/dockerfile"
                      echo "Downloadin Docker-compose.yaml file"
-                     sh "curl -O -L "
-                     sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"http://3.0.46.227:9000\"' > .env"
+                     sh "curl -O -L https://raw.github.com/AmalAsokakumar/norq-repo/blob/main/LIVE/v1/frontend/docker-compose.yaml"
+                     sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"${env.BACKEND}\"' > .env"
                      sh "npm install"
                      sh "npm run build"
                      sh "ls -la "
