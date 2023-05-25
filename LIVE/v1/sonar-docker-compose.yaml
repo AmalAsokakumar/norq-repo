@@ -1,3 +1,5 @@
+# author : amal 
+# resourse : 8 Gib, 2 Vcp, aws
 version: '3'
 
 services:
@@ -11,13 +13,30 @@ services:
       - logs:/opt/sonarqube/logs
       - extensions:/opt/sonarqube/extensions
     restart: unless-stopped
+    depends_on:
+      - db
     environment:
-      - SONARQUBE_JDBC_USERNAME=sonar
-      - SONARQUBE_JDBC_PASSWORD=sonar
-      # - SONARQUBE_JDBC_URL=jdbc:postgresql://localhost/sonarqube
+      - SONARQUBE_JDBC_USERNAME=my-username
+      - SONARQUBE_JDBC_PASSWORD=my-password
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonarqube
+    mem_limit: 4g
+    cpus: 1
+
+  db:
+    container_name: my-postgres-container
+    image: postgres
+    environment:
+      - POSTGRES_USER=my-username
+      - POSTGRES_PASSWORD=my-password
+      - POSTGRES_DB=sonarqube
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    mem_limit: 2g
+    cpus: 0.5
 
 volumes:
   data:
   logs:
   extensions:
+  db-data:
 
