@@ -1,5 +1,7 @@
 # author : amal 
 # resourse : 8 Gib, 2 Vcp, aws
+# default credentials : U:admin P:admin
+# new credentials : U:sonar P:sonar
 version: '3'
 
 services:
@@ -25,6 +27,8 @@ services:
   db:
     container_name: my-postgres-container
     image: postgres
+    # ports:
+    #   - 5432:5432
     environment:
       - POSTGRES_USER=my-username
       - POSTGRES_PASSWORD=my-password
