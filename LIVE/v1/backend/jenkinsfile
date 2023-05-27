@@ -2,10 +2,6 @@
 // for deploying the backend code in ubuntu 22.04
 pipeline {
     agent any
-    options {
-        // Set the job description
-        description('This pipeline job is to deploy backend code')
-    }
     environment {
         // Define any environmental variables
         PATH = '/home/ubuntu/'
