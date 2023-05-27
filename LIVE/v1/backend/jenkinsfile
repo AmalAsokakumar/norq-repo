@@ -13,16 +13,17 @@ pipeline {
                 script {
                     echo 'Removing old code'
                     def customWorkspace = env.PATH
-                    ws(customWorkspace) {
-                        sh 'rm -rf *'
-                    }
+                    // ws(customWorkspace) {
+                    //     sh 'rm -rf *'
+                    // }
+                    cleanWs()
                 }
             }
         }
         stage("SCM") {
             steps {
                 echo "Pulling code from SCM..."
-                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
+                git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
             }
         }
         stage("Building The Artifact") {
