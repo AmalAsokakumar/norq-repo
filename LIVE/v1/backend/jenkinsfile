@@ -1,0 +1,57 @@
+// author  : amal 
+// for deploying the backend code in ubuntu 22.04
+pipeline {
+    agent any
+    options {
+        // Set the job description
+        description('This pipeline job is to deploy backend code')
+    }
+    environment {
+        // Define any environmental variables
+        PATH = '/home/ubuntu/'
+    }
+    stages {
+        stage('Set Workspace') {
+            steps {
+                // Set the workspace to a specific directory
+                script {
+                    echo 'Removing old code'
+                    def customWorkspace = env.PATH
+                    ws(customWorkspace) {
+                        sh 'rm -rf *'
+                    }
+                }
+            }
+        }
+        stage("SCM") {
+            steps {
+                echo "Pulling code from SCM..."
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+            }
+        }
+        stage("Building The Artifact") {
+            steps {
+                script {
+                    echo "Installing the Dependencies"
+                    sh "ls -l"
+                    sh "npm install"
+                }
+            }
+        }
+        stage("Deploy") {
+            steps {
+                script {
+                    echo "Starting the application..."
+                    sh "npm start"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            // Clean up workspace after the build
+            cleanWs()
+        }
+    }
+}
+
