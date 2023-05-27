@@ -2,7 +2,7 @@
 '''
     author          : amal 
     use             : backend code deployment 
-    contents        : nodejs installation, version 16.19
+    contents        : nodejs version 16.19, mongodb, jdk, jenkins 
     reference link  : https://www.fosstechnix.com/how-to-install-mongodb-on-ubuntu-22-04-lts/
 '''
 # installing node js 
@@ -21,4 +21,27 @@ sudo apt install -y mongodb-org
 sudo systemctl enable --now mongod
 sudo systemctl status mongod
 mongod --version
-# enable remote connection to mongoDB
+# enable remote connection to mongoDB > go to the reference link for that.
+# install jenkins
+# creating a user
+adduser jenkins
+usermod -aG sudo jenkins 
+# installing openjdk 
+sudo apt update
+java -version
+sudo apt install default- -y
+java -version
+sudo apt install default-jdk -y
+javac -version
+# installing jenkins 
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins -y
+# starting jenkins
+sudo systemctl start jenkins.service
+sudo systemctl status jenkins
+sudo systemctl enable jenkins 

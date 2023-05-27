@@ -26,7 +26,7 @@ pipeline {
         stage("SCM") {
             steps {
                 echo "Pulling code from SCM..."
-                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/Mentrictech-Norq/git_listeners-gps.git'
             }
         }
         stage("Building The Artifact") {
