@@ -45,3 +45,4 @@ sudo apt-get install jenkins -y
 sudo systemctl start jenkins.service
 sudo systemctl status jenkins
 sudo systemctl enable jenkins 
+sudo usermod -aG sudo jenkins 

@@ -4,7 +4,7 @@ pipeline {
     agent any
     environment {
         // Define any environmental variables
-        PATH = '/home/ubuntu/'
+        PATH = '/var/lib/jenkins/workspace'
     }
     stages {
         stage('Set Workspace') {
