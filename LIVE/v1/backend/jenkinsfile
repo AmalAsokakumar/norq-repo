@@ -22,7 +22,7 @@ pipeline {
         stage("SCM") {
             steps {
                 echo "Pulling code from SCM..."
-                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/Mentrictech-Norq/git_listeners-gps.git'
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
             }
         }
         stage("Building The Artifact") {
