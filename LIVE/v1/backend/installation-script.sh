@@ -1,12 +1,12 @@
 #!/bin/bash
-'''
-    author          : amal 
-    use             : backend code deployment 
-    contents        : nodejs version 16.19, mongodb, jdk, jenkins 
-    reference link  : https://www.fosstechnix.com/how-to-install-mongodb-on-ubuntu-22-04-lts/
-'''
+
+    # author          : amal 
+    # use             : backend code deployment 
+    # contents        : nodejs version 16.19, mongodb, jdk, jenkins 
+    # reference link  : https://www.fosstechnix.com/how-to-install-mongodb-on-ubuntu-22-04-lts/
+
 # installing node js 
-cd ~
+cd ~ || exit
 curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh
 sudo bash nodesource_setup.sh
 sudo apt-get install -y nodejs
