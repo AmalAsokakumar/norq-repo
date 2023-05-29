@@ -1,47 +1,63 @@
-// author: amal
-// for deploying the backend code in Ubuntu 22.04
 pipeline {
     agent any
     environment {
         // Define any environmental variables
         // PATH = '/var/lib/jenkins/workspace'
-        PATH = '/home/ubuntu/backend'
+        // PATH = '/home/ubuntu/backend'
     }
-        stage('Set Workspace') {
-            steps {
-                script {
-                    def workspaceDir = "/home/ubuntu/backend"
-                    def filesExist = sh(script: "ls -A ${workspaceDir} | wc -l", returnStdout: true).trim().toInteger() > 0
-                    
-                    if (filesExist) {
-                        sh "cd ${workspaceDir} && rm -rf *"
-                    } else {
-                        echo "No files found in the workspace. Skipping the 'Set Workspace' stage."
-                    }
-                }
-            }
-        }
-        stage("SCM") {
+    stages {
+        // stage('Set Workspace') {
+        //     steps {
+        //         script {
+        //             def workspaceDir = "/home/ubuntu/backend"
+        //             def filesExist = sh(script: "ls -A ${workspaceDir} | wc -l", returnStdout: true).trim().toInteger() > 0
+        //             if (filesExist) {
+        //                 sh "cd ${workspaceDir} && rm -rf *"
+        //             } else {
+        //                 echo "No files found in the workspace. Skipping the 'Set Workspace' stage."
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Checkout') {
             steps {
                 echo "Pulling code from SCM..."
                 git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
             }
         }
-        stage("Building The Artifact") {
+        stage('Install Dependencies') {
             steps {
-                script {
-                    echo "Installing the Dependencies"
-                    sh "ls -l"
-                    sh "npm install"
-                }
+                sh 'npm install'
             }
         }
-        stage("Deploy") {
+        stage('Build') {
+            steps {
+                echo 'building'
+                // Add any necessary build steps here
+                // For example, compiling TypeScript code, bundling assets, etc.
+            }
+        }
+        stage('Deploy') {
             steps {
                 script {
-                    echo "Starting the application..."
-                    sh "npm start"
+                    def directory = '/home/ubuntu/backend'
+                    
+                    // Change the working directory to the specified directory
+                    dir(directory) {
+                        sh 'ls' // List files in the current directory
+                    }
+                    sh 'rm -rf /home/ubuntu/backend/*' // check wheter it is empty or not.
+                    dir(directory) {
+                        sh 'ls' // List files in the current directory
+                    }
+                    sh 'cp -r * /home/ubuntu/backend' // Copy the updated code to the deployment directory
+                    sh 'nohup npm start &' // Start the updated application in the background using nohup
+                    // You can also use a custom start command if specified in your package.json script section
+                    // For example: sh 'npm run start-prod'
+                    // Make sure that your package.json file has a "start" script defined
                 }
+                // Indicate that the deployment is completed
+                echo 'Deployment completed successfully.'
             }
         }
     }

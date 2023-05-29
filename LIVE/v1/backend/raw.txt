@@ -1,0 +1,53 @@
+// author: amal
+// for deploying the backend code in Ubuntu 22.04
+pipeline {
+    agent any
+    environment {
+        // Define any environmental variables
+        // PATH = '/var/lib/jenkins/workspace'
+        PATH = '/home/ubuntu/backend'
+    }
+        stage('Set Workspace') {
+            steps {
+                script {
+                    def workspaceDir = "/home/ubuntu/backend"
+                    def filesExist = sh(script: "ls -A ${workspaceDir} | wc -l", returnStdout: true).trim().toInteger() > 0
+                    if (filesExist) {
+                        sh "cd ${workspaceDir} && rm -rf *"
+                    } else {
+                        echo "No files found in the workspace. Skipping the 'Set Workspace' stage."
+                    }
+                }
+            }
+        }
+        stage("SCM") {
+            steps {
+                echo "Pulling code from SCM..."
+                git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
+            }
+        }
+        stage("Building The Artifact") {
+            steps {
+                script {
+                    echo "Installing the Dependencies"
+                    sh "ls -l"
+                    sh "npm install"
+                }
+            }
+        }
+        stage("Deploy") {
+            steps {
+                script {
+                    echo "Starting the application..."
+                    sh "npm start"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            // Clean up workspace after the build
+            cleanWs()
+        }
+    }
+}
