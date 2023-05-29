@@ -1,11 +1,11 @@
-// author  : amal 
-// for deploying the backend code in ubuntu 22.04
+// author: amal
+// for deploying the backend code in Ubuntu 22.04
 pipeline {
     agent any
     environment {
         // Define any environmental variables
         // PATH = '/var/lib/jenkins/workspace'
-        PATH = /home/ubuntu/backend
+        PATH = '/home/ubuntu/backend'
     }
     stages {
         stage('Set Workspace') {
@@ -14,9 +14,11 @@ pipeline {
                 script {
                     echo 'Removing old code'
                     def customWorkspace = env.PATH
-                    // ws(customWorkspace) {
-                    //     sh 'rm -rf *'
-                    // }
+                    node {
+                        ws(customWorkspace) {
+                            sh 'rm -rf *'
+                        }
+                    }
                     cleanWs()
                 }
             }
@@ -52,4 +54,3 @@ pipeline {
         }
     }
 }
-
