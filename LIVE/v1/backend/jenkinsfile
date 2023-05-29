@@ -7,24 +7,6 @@ pipeline {
         // PATH = '/var/lib/jenkins/workspace'
         PATH = '/home/ubuntu/backend'
     }
-    stages {
-        // stage('Set Workspace') {
-        //     steps {
-        //         // Set the workspace to a specific directory
-        //         script {
-        //             echo 'Removing old code'
-        //             def customWorkspace = env.PATH
-        //             // node {
-        //                 ws(customWorkspace) {
-        //                     sh 'rm -rf *'
-        //                 }
-        //             }
-        //             // cleanWs()
-        //         }
-        //     }
-        // }
-
-
         stage('Set Workspace') {
             steps {
                 script {
@@ -33,18 +15,12 @@ pipeline {
                     
                     if (filesExist) {
                         sh "cd ${workspaceDir} && rm -rf *"
-                        
-                        // Rest of the stage's steps go here
-                        // ...
                     } else {
                         echo "No files found in the workspace. Skipping the 'Set Workspace' stage."
                     }
                 }
             }
         }
-
-
-
         stage("SCM") {
             steps {
                 echo "Pulling code from SCM..."
