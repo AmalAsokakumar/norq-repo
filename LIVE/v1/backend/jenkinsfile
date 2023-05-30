@@ -1,10 +1,10 @@
 pipeline {
     agent any
-    environment {
-        // Define any environmental variables
-        // PATH = '/var/lib/jenkins/workspace'
-        // PATH = '/home/ubuntu/backend'
-    }
+    // environment {
+    //     // Define any environmental variables
+    //     // PATH = '/var/lib/jenkins/workspace'
+    //     // PATH = '/home/ubuntu/backend'
+    // }
     stages {
         // stage('Set Workspace') {
         //     steps {
@@ -35,6 +35,21 @@ pipeline {
                 echo 'building'
                 // Add any necessary build steps here
                 // For example, compiling TypeScript code, bundling assets, etc.
+            }
+        }
+        stage('Check and Kill Port') {
+            steps {
+                script {
+                    def port = 9000 // Replace 9000 with the port number you want to check
+                    def portInUse = sh(script: "lsof -i :${port} | awk '{print \$2}' | tail -n +2", returnStdout: true).trim()
+                    if (portInUse) {
+                        echo "Port ${port} is already in use by process ${portInUse}. Killing the process..."
+                        sh(script: "kill -9 ${portInUse}")
+                        echo "Process ${portInUse} killed successfully."
+                    } else {
+                        echo "Port ${port} is available for use."
+                    }
+                }
             }
         }
         stage('Deploy') {

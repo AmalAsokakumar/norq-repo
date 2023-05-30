@@ -51,3 +51,53 @@ pipeline {
         }
     }
 }
+
+// older script.
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Pulling code from SCM..."
+                git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'building'
+                // Add any necessary build steps here
+                // For example, compiling TypeScript code, bundling assets, etc.
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    def directory = '/home/ubuntu/backend'
+                    
+                    // Change the working directory to the specified directory
+                    dir(directory) {
+                        sh 'ls' // List files in the current directory
+                    }
+                    sh 'rm -rf /home/ubuntu/backend/*' // check wheter it is empty or not.
+                    dir(directory) {
+                        sh 'ls' // List files in the current directory
+                    }
+                    sh 'cp -r * /home/ubuntu/backend' // Copy the updated code to the deployment directory
+                    sh 'nohup npm start &' // Start the updated application in the background using nohup
+                    // You can also use a custom start command if specified in your package.json script section
+                    // For example: sh 'npm run start-prod'
+                    // Make sure that your package.json file has a "start" script defined
+                }
+                // Indicate that the deployment is completed
+                echo 'Deployment completed successfully.'
+            }
+        }
+    }
+}
+

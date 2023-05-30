@@ -1,11 +1,12 @@
 #!/bin/bash
 
-'''
-author : Amal 
-use case : jenkins, docker, docker-compose, for ubuntu:22.04
-description : 
 
-'''
+        # author : Amal 
+        # use case : jenkins, docker, docker-compose, for ubuntu:22.04
+        # description : 
+
+
+
 # creating a user
 adduser jenkins
 usermod -aG sudo jenkins 
