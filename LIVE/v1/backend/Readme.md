@@ -8,4 +8,3 @@ sudo service jenkins restart
 
 # to view the product 
 sudo lsof -i -P -n
-
