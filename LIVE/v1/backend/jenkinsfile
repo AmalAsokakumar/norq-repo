@@ -21,6 +21,7 @@ pipeline {
         // }
         stage('Checkout') {
             steps {
+                cleanWs() // clean workspace.
                 echo "Pulling code from SCM..."
                 git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
             }
@@ -65,8 +66,10 @@ pipeline {
                     dir(directory) {
                         sh 'ls' // List files in the current directory
                     }
-                    sh 'cp -r * /home/ubuntu/backend' // Copy the updated code to the deployment directory
-                    sh 'nohup npm start &' // Start the updated application in the background using nohup
+                    sh 'mv -r * /home/ubuntu/backend' // Copy the updated code to the deployment directory
+                    dir(directory){ 
+                        sh 'nohup npm start &' // Start the updated application in the background using nohup
+                    }
                     // You can also use a custom start command if specified in your package.json script section
                     // For example: sh 'npm run start-prod'
                     // Make sure that your package.json file has a "start" script defined
@@ -76,10 +79,10 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            // Clean up workspace after the build
-            cleanWs()
-        }
-    }
+    // post {
+    //     always {
+    //         // Clean up workspace after the build
+    //         cleanWs()
+    //     }
+    // }
 }

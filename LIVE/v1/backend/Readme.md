@@ -6,4 +6,6 @@ sudo chmod -R 755 /home/ubuntu
 sudo chown -R jenkins:jenkins /home/ubuntu/
 sudo service jenkins restart
 
+# to view the product 
+sudo lsof -i -P -n
 
