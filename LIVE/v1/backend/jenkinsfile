@@ -23,7 +23,8 @@ pipeline {
             steps {
                 cleanWs() // clean workspace.
                 echo "Pulling code from SCM..."
-                git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
+                // git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/navasnazar/GPS-Backend-code-with-listeners-navas.git'
             }
         }
         stage('Install Dependencies') {
@@ -53,77 +54,49 @@ pipeline {
                 }
             }
         }
-
-
-
         stage('Deploy') {
             steps {
                 script {
                     def directory = '/home/ubuntu/backend'
-
                     // Change the working directory to the specified directory
                     dir(directory) {
                         sh 'ls' // List files in the current directory
                     }
-
                     def filesExist = sh(script: "ls -A ${directory} | wc -l", returnStdout: true).trim().toInteger() > 0
-
                     if (filesExist) {
                         sh "rm -rf ${directory}/*" // Delete the contents of the directory
                     } else {
                         echo "${directory} is already empty. Skipping deletion."
                     }
-
                     dir(directory) {
                         sh 'ls' // List files in the current directory
                     }
                     sh 'mv  * /home/ubuntu/backend' // Copy the updated code to the deployment directory
 
                     dir(directory) {
-                        sh 'ls -lrt'
-                        // Start the updated application in the background using nohup
-                        sh 'nohup npm start > /dev/null 2>&1 &'
-                        // You can also use a custom start command if specified in your package.json script section
-                        // For example: sh 'nohup npm run start-prod > /dev/null 2>&1 &'
-                        // Make sure that your package.json file has a "start" script defined
+                        def nodeApp = nodejs(nodeJSInstallationName: 'node') {
+                            // Change 'Your_NodeJS_Installation' to the actual name of your Node.js installation configured in Jenkins
+                            // Run your Node.js application in the background
+                            sh 'npm start &'
+                            // Optionally, you can capture the process ID (PID) of the background process
+                            def pid = sh(script: 'echo \$!', returnStdout: true).trim()
+                            echo "Node.js application is running in the background with PID: ${pid}"
+                            sh 'ls -lrt'
+                            // pm2 start npm --name "your-app-name" -- start
+                            pm2 start npm --name gps_app --start // to run the application in background.
+                            // Start the updated application in the background using nohup
+                            // sh 'nohup npm start'
+                            //  sh 'nohup npm start > /dev/null 2>&1 &'
+                            // You can also use a custom start command if specified in your package.json script section
+                            // For example: sh 'nohup npm run start-prod > /dev/null 2>&1 &'
+                            // Make sure that your package.json file has a "start" script defined
+                        }
                     }
                     // Indicate that the deployment is completed
                     echo 'Deployment completed successfully.'
                 }
             }
         }
-
-        // stage('Deploy') {
-        //     steps {
-        //         script {
-        //             def directory = '/home/ubuntu/backend'
-        //             // Change the working directory to the specified directory
-        //             dir(directory) {
-        //                 sh 'ls' // List files in the current directory
-        //             }
-        //             def filesExist = sh(script: "ls -A ${directory} | wc -l", returnStdout: true).trim().toInteger() > 0
-        //             if (filesExist) {
-        //                 sh "rm -rf ${directory}/*" // Delete the contents of the directory
-        //             } else {
-        //                 echo "${directory} is already empty. Skipping deletion."
-        //             }
-        //             dir(directory) {
-        //                 sh 'ls' // List files in the current directory
-        //             }
-        //             sh 'mv -r * /home/ubuntu/backend' // Copy the updated code to the deployment directory
-        //             dir(directory){
-        //                 sh 'ls -lrt' 
-        //                 // sh 'nohup npm start > /dev/null 2>&1 &'
-        //                 sh 'nohup npm start > /home/ubuntu/backend 2>&1 &'
-        //             }
-        //             // You can also use a custom start command if specified in your package.json script section
-        //             // For example: sh 'npm run start-prod'
-        //             // Make sure that your package.json file has a "start" script defined
-        //         }
-        //         // Indicate that the deployment is completed
-        //         echo 'Deployment completed successfully.'
-        //     }
-        // }
     }
     // post {
     //     always {
