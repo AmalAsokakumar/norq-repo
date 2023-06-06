@@ -20,6 +20,8 @@ pipeline{
                      echo "Downloading Dockerfile"
                      sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/dockerfile"
                      echo "Downloadin Docker-compose.yaml file"
+                    //  for backend code.
+                    //  sh "curl -o docker-compose-backend.yaml -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/docker-compose.yaml"
                      sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/docker-compose.yaml"
                      sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"${env.BACKEND}\"' > .env"
                      sh "npm install"
@@ -35,8 +37,12 @@ pipeline{
                     sh "ls -lrt"
                     sh "echo 'Deploying image react${BUILD_NUMBER}'"
                     sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose.yaml"
+                    // for backend
+                    // sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose-backend.yaml"
                     sh "cat docker-compose.yaml"
+                    // sh "cat docker-compose-backend.yaml"
                     sh "docker-compose up -d " 
+                    // sh "docker-compose up -d -f docker-compose-backend.yaml"
                     sh "rm -rf /var/lib/jenkins/workspace/Jenkins-react-app/"
                 }
             }

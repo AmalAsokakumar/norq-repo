@@ -49,17 +49,17 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-c
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
-# installing node-on ubuntu.
-sudo apt update
-sudo apt install curl ca-certificates gnupg
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-sudo apt-get update
-sudo apt-get install software-properties-common
-sudo add-apt-repository "deb https://deb.nodesource.com/node_16.x $(lsb_release -cs) main" -y
-sudo apt update
-sudo apt install nodejs -y
-node -v
-which node 
+# # installing node-on ubuntu.
+# sudo apt update
+# sudo apt install curl ca-certificates gnupg
+# curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+# sudo apt-get update
+# sudo apt-get install software-properties-common
+# sudo add-apt-repository "deb https://deb.nodesource.com/node_16.x $(lsb_release -cs) main" -y
+# sudo apt update
+# sudo apt install nodejs -y
+# node -v
+# which node 
 
 # installing node js 
 cd ~ || exit
