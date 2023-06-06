@@ -15,4 +15,8 @@ which node
 # node -v             --- to view the version of the node 
 # nvm  use <version>  --- to use that particular version of node
 # nvm use latest      --- to install latest version of the node
-# nvm install <version to install a paticular version 
+# nvm install <version to install a paticular version
+
+
+
+
