@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment {
-        BACKEND = "http://3.0.46.227:9000"
+        BACKEND = "http://localhost:9000"
     }
     stages{
         stage("SCM"){
@@ -20,7 +20,7 @@ pipeline{
                      echo "Downloading Dockerfile"
                      sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/dockerfile"
                      echo "Downloadin Docker-compose.yaml file"
-                     sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/docker-compose.yaml"
+                     sh "curl -o docker-compose-backend.yaml -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/docker-compose.yaml"
                      sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"${env.BACKEND}\"' > .env"
                      sh "npm install"
                      sh "npm run build"
@@ -34,9 +34,10 @@ pipeline{
                 script{
                     sh "ls -lrt"
                     sh "echo 'Deploying image react${BUILD_NUMBER}'"
-                    sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose.yaml"
-                    sh "cat docker-compose.yaml"
-                    sh "docker-compose up -d " 
+                    sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose-backend.yaml"
+                    sh "sed -i 's/3000:3000/80:3000/g' docker-compose-backend.yaml"
+                    sh "cat docker-compose-backend.yaml"
+                    sh "docker-compose up -d -f docker-compose-backend.yaml"
                     sh "rm -rf /var/lib/jenkins/workspace/Jenkins-react-app/"
                 }
             }

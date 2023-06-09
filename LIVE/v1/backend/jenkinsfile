@@ -77,7 +77,7 @@ pipeline {
                         def nodeApp = nodejs(nodeJSInstallationName: 'node') {
                             // Change 'Your_NodeJS_Installation' to the actual name of your Node.js installation configured in Jenkins
                             // Run your Node.js application in the background
-                            sh 'npm start &'
+                            // sh 'npm start &'
                             // Optionally, you can capture the process ID (PID) of the background process
                             def pid = sh(script: 'echo \$!', returnStdout: true).trim()
                             echo "Node.js application is running in the background with PID: ${pid}"
