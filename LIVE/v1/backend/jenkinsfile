@@ -23,8 +23,8 @@ pipeline {
             steps {
                 cleanWs() // clean workspace.
                 echo "Pulling code from SCM..."
-                // git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/bws-prashanth/gps.git'
-                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/navasnazar/GPS-Backend-code-with-listeners-navas.git'
+                git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/Mentrictech-Norq/git_listeners-gps.git'
+                // git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/navasnazar/GPS-Backend-code-with-listeners-navas.git'
             }
         }
         stage('Install Dependencies') {

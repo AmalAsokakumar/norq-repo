@@ -96,4 +96,4 @@ sudo chown -R jenkins:jenkins /home/ubuntu/
 sudo service jenkins restart
 
 # installing pm2 
-npm install -g pm2
+

@@ -1,3 +1,29 @@
+refer the url : https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-20-04
+
+
+# installing pm2
+
+- Use npm to install the latest version of PM2 on your server:
+
+Let’s first use the pm2 start command to run your application, hello.js, in the background:
+
+```
+sudo npm install pm2@latest -g
+```
+######  The -g option tells npm to install the module globally, so that it’s available system-wide.
+
+
+```
+pm2 start hello.js
+```
+
+###### This subcommand generates and configures a startup script to launch PM2 and its managed processes on server boots:
+
+```
+pm2 startup systemd
+```
+
+
 # the file permission needed on ec2 
 
 ```
