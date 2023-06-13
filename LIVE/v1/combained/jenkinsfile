@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment {
-        BACKEND = "http://localhost:9000"
+        BACKEND = "http://52.23.119.139:9000"
     }
     stages{
         stage("SCM"){
@@ -45,3 +45,4 @@ pipeline{
     }
 }
 
+// elastic ip address is used : 52.23.119.139

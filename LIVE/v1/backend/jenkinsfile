@@ -83,7 +83,7 @@ pipeline {
                             echo "Node.js application is running in the background with PID: ${pid}"
                             sh 'ls -lrt'
                             // pm2 start npm --name "your-app-name" -- start
-                            pm2 start npm --name gps_app --start // to run the application in background.
+                            pm2 start npm --name gps_app  // to run the application in background.
                             // Start the updated application in the background using nohup
                             // sh 'nohup npm start'
                             //  sh 'nohup npm start > /dev/null 2>&1 &'

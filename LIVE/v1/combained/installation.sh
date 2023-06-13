@@ -1,7 +1,15 @@
 #!/bin/bash
 
         # author : Amal 
-        # use case : jenkins, docker, docker-compose, nodejs, jdk, mongodb for ubuntu:22.04
+        # use case : for ubuntu
+        # tasks :  
+                  #creating user
+                  #installing open jdk 
+                  # installing jenkins 
+                  # installing docker and docker-compose
+                  # installing nodejs
+                  # installing mongodb 
+                  # installing pm2 
         # reference link  : https://www.fosstechnix.com/how-to-install-mongodb-on-ubuntu-22-04-lts/
         # description : 
 
