@@ -1,24 +1,6 @@
 pipeline {
     agent any
-    // environment {
-    //     // Define any environmental variables
-    //     // PATH = '/var/lib/jenkins/workspace'
-    //     // PATH = '/home/ubuntu/backend'
-    // }
     stages {
-        // stage('Set Workspace') {
-        //     steps {
-        //         script {
-        //             def workspaceDir = "/home/ubuntu/backend"
-        //             def filesExist = sh(script: "ls -A ${workspaceDir} | wc -l", returnStdout: true).trim().toInteger() > 0
-        //             if (filesExist) {
-        //                 sh "cd ${workspaceDir} && rm -rf *"
-        //             } else {
-        //                 echo "No files found in the workspace. Skipping the 'Set Workspace' stage."
-        //             }
-        //         }
-        //     }
-        // }
         stage('Checkout') {
             steps {
                 cleanWs() // clean workspace.
@@ -35,22 +17,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'building'
-                // Add any necessary build steps here
-                // For example, compiling TypeScript code, bundling assets, etc.
+                sh 'npm ci'
             }
         }
         stage('Check and Kill Port') {
             steps {
                 script {
-                    def port = 9000 // Replace 9000 with the port number you want to check
-                    def portInUse = sh(script: "lsof -i :${port} | awk '{print \$2}' | tail -n +2", returnStdout: true).trim()
-                    if (portInUse) {
-                        echo "Port ${port} is already in use by process ${portInUse}. Killing the process..."
-                        sh(script: "kill -9 ${portInUse}")
-                        echo "Process ${portInUse} killed successfully."
-                    } else {
-                        echo "Port ${port} is available for use."
-                    }
+                    sh 'pm2 list'
+                    sh 'pm2 stop all'
                 }
             }
         }
@@ -58,9 +32,8 @@ pipeline {
             steps {
                 script {
                     def directory = '/home/ubuntu/backend'
-                    // Change the working directory to the specified directory
                     dir(directory) {
-                        sh 'ls' // List files in the current directory
+                        sh 'ls' 
                     }
                     def filesExist = sh(script: "ls -A ${directory} | wc -l", returnStdout: true).trim().toInteger() > 0
                     if (filesExist) {
@@ -72,24 +45,8 @@ pipeline {
                         sh 'ls' // List files in the current directory
                     }
                     sh 'mv  * /home/ubuntu/backend' // Copy the updated code to the deployment directory
-
                     dir(directory) {
-                        def nodeApp = nodejs(nodeJSInstallationName: 'node') {
-                            // Change 'Your_NodeJS_Installation' to the actual name of your Node.js installation configured in Jenkins
-                            // Run your Node.js application in the background
-                            // sh 'npm start &'
-                            // Optionally, you can capture the process ID (PID) of the background process
-                            def pid = sh(script: 'echo \$!', returnStdout: true).trim()
-                            echo "Node.js application is running in the background with PID: ${pid}"
-                            sh 'ls -lrt'
-                            // pm2 start npm --name "your-app-name" -- start
-                            pm2 start npm --name gps_app  // to run the application in background.
-                            // Start the updated application in the background using nohup
-                            // sh 'nohup npm start'
-                            //  sh 'nohup npm start > /dev/null 2>&1 &'
-                            // You can also use a custom start command if specified in your package.json script section
-                            // For example: sh 'nohup npm run start-prod > /dev/null 2>&1 &'
-                            // Make sure that your package.json file has a "start" script defined
+                           sh 'pm2 start server.js' // to run the application in background.
                         }
                     }
                     // Indicate that the deployment is completed
@@ -98,10 +55,9 @@ pipeline {
             }
         }
     }
-    // post {
-    //     always {
-    //         // Clean up workspace after the build
-    //         cleanWs()
-    //     }
-    // }
+    post {
+        always {
+           sh "pm2 list"
+        }
+    }
 }
