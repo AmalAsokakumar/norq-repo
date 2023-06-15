@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+# Set up the system
+RUN apt update && apt upgrade -y
+RUN apt install mysql-server -y
+
+# Create a database
+RUN service mysql start && \
+    mysql -e "create database akaunting;" && \
+    mysql -e "create user 'accountant'@'localhost' identified by 'your-password';" && \
+    mysql -e "grant all privileges on akaunting.* to 'accountant'@'localhost';" && \
+    mysql -e "flush privileges;"
+
+EXPOSE 3306
+
+CMD ["mysqld"]

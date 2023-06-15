@@ -6,18 +6,6 @@
 sudo apt update && sudo apt upgrade -y
 sudo apt install software-properties-common 
 sudo add-apt-repository  ppa:ondrej/php libapache2-mod-php -y 
-# sudo apt install \
-#  php-imagick \
-#  php8.0-common \
-#  php8.0-mysql \
-#  php8.0-gd \
-#  php8.0-bcmath \
-#  php8.0-curl \
-#  php8.0-zip \
-#  php8.0-xml \
-#  php8.0-mbstring \
-#  php8.0-bz2 \
-#  php8.0-intl  -y
 
 sudo apt install \
  php-imagick \
@@ -102,12 +90,6 @@ sudo systemctl restart apache2
 
 sudo apt install certbot python3-certbot-apache -y
 sudo certbot --apache --agree-tos --redirect --hsts --staple-ocsp --email amal.a@norq.in -d akaunting.norqlabs.com -y
-
-
-
-
-
-
 
 # additional steps 
 # sudo apt install libapache2-mod-php
