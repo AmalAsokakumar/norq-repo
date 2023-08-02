@@ -1,0 +1,59 @@
+pipeline{
+    agent any
+    environment {
+        BACKEND = "http://52.23.119.139:9000"
+    }
+    stages{
+        stage("SCM"){
+            steps{
+                cleanWs()
+                sh "docker system prune -af "
+                sh "echo 'cloning' "
+                sh "ls -lrt"
+                git branch: 'main', credentialsId: 'amal-github-pin', url: 'https://github.com/qyubi/GPS-Fleet-Tracking-System-React.git'
+            }
+        }
+        stage("Build Docker Image"){
+            steps{
+                script{
+                     sh "ls -l"
+                     echo "Downloading Dockerfile"
+                     sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/dockerfile"
+                     echo "Downloadin Docker-compose.yaml file"
+                     sh "curl -O -L https://raw.githubusercontent.com/AmalAsokakumar/norq-repo/main/LIVE/v1/frontend/docker-compose.yaml"
+                     sh "echo 'NEXT_PUBLIC_API_BASE_URL=\"${env.BACKEND}\"' > .env"
+                     sh "npm install"
+                     sh "npm run build"
+                     sh "ls -la "
+                    //  sh "docker build -t react${BUILD_NUMBER} . "
+                    sh"docker build -t frontend-code ." 
+                }
+            }
+        }
+        stage("pushing to ecr...") {
+            steps {
+                script{
+                    sh '''
+                        $(aws ecr get-login --no-include-email --region us-east-2)
+                        docker tag frontend-code:latest 566811740270.dkr.ecr.us-east-2.amazonaws.com/frontend-code:latest
+                        docker push 566811740270.dkr.ecr.us-east-2.amazonaws.com/frontend-code:latest
+                    '''
+
+
+                    // sh '''
+                    //     aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 566811740270.dkr.ecr.us-east-2.amazonaws.com
+                    //     docker tag frontend-code:latest 566811740270.dkr.ecr.us-east-2.amazonaws.com/frontend-code:latest
+                    //     docker push 566811740270.dkr.ecr.us-east-2.amazonaws.com/frontend-code:latest
+                    // '''
+                    // sh "ls -lrt"
+                    // sh "echo 'Deploying image react${BUILD_NUMBER}'"
+                    // sh "sed -i 's/IMAGE/react${BUILD_NUMBER}/g' docker-compose.yaml"
+                    // sh "cat docker-compose.yaml"
+                    // sh "docker-compose up -d " 
+                    // sh "rm -rf /var/lib/jenkins/workspace/Jenkins-react-app/"
+                }
+            }
+        }
+    }
+}
+

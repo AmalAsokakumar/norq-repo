@@ -1,0 +1,41 @@
+//  try this out on frontend server to check 
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                cleanWs() // clean workspace.
+                echo 'current dir: /home/ubuntu/backend/git_listeners-gps'
+                echo "Pulling code from SCM..."
+                script{
+                    def directory = '/home/ubuntu/backend/git_listeners-gps'
+                    dir(directory) {                    
+                        withCredentials([gitUsernamePassword(credentialsId: 'amal-github-pin', gitToolName: 'git-tool')]) {
+                            // git branch: 'trunk', credentialsId: 'amal-github-pin', url: 'https://github.com/Mentrictech-Norq/git_listeners-gps.git'
+                            sh "git pull origin trunk "
+                        }
+                    }
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                script{
+                    def directory = '/home/ubuntu/backend/git_listeners-gps'
+                    dir(directory) {
+                        sh 'npm ci'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                    sh "pm2 list"
+                    sh "pm2 restart all"
+            }
+        }
+    }
+}
